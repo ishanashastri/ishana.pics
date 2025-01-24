@@ -25,7 +25,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 const img = document.createElement("img");
                 img.src = `${imageFolder}${imageName}`;
                 img.alt = imageName;
-                img.addEventListener("click", () => openLightbox(img.src)); // Add click event for lightbox
+                img.addEventListener("click", () => openLightbox(img)); // Add click event for lightbox
 
                 img.onload = () => {
                     loadedImages++;
@@ -49,14 +49,43 @@ document.addEventListener("DOMContentLoaded", function () {
         });
   
     // Lightbox functionality
-    function openLightbox(src) {
-        lightboxImage.src = src;
-        lightbox.style.display = "flex";
+    function openLightbox(img) {
+        const rect = img.getBoundingClientRect(); // Get the position and size of the clicked image
+
+        // Set the lightbox image to match the original image's position and size
+        lightboxImage.src = img.src;
+        lightboxImage.style.top = `${rect.top}px`;
+        lightboxImage.style.left = `${rect.left}px`;
+        lightboxImage.style.width = `${rect.width}px`;
+        lightboxImage.style.height = `${rect.height}px`;
+
+        // Display the lightbox container
+        lightbox.style.display = "block";
+
+        // Trigger the zoom-in animation by setting it to full-screen size
+        setTimeout(() => {
+            lightboxImage.style.top = "50%";
+            lightboxImage.style.left = "50%";
+            lightboxImage.style.transform = "translate(-50%, -50%) scale(1)";
+            lightboxImage.style.width = "";
+            lightboxImage.style.height = "";
+        }, 10);
     }
 
     function closeLightbox() {
-        lightbox.style.display = "none";
-        lightboxImage.src = ""; // Clear the source for safety
+        // Reverse the zoom-out animation to the image's original position
+        const rect = lightboxImage.getBoundingClientRect();
+        lightboxImage.style.top = `${rect.top}px`;
+        lightboxImage.style.left = `${rect.left}px`;
+        lightboxImage.style.width = `${rect.width}px`;
+        lightboxImage.style.height = `${rect.height}px`;
+        lightboxImage.style.transform = "";
+
+        // Hide the lightbox after the animation
+        setTimeout(() => {
+            lightbox.style.display = "none";
+            lightboxImage.src = ""; // Clear the source for safety
+        }, 10); // Match the transition duration
     }
 
     lightboxClose.addEventListener("click", closeLightbox);
