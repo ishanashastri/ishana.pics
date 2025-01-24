@@ -1,5 +1,6 @@
 import os
 import json
+import random
 
 # Specify the directory where your images are stored
 image_directory = "assets/"
@@ -10,6 +11,7 @@ image_extensions = (".png", ".jpg", ".jpeg", ".gif", ".webp", ".svg")
 
 # Get all image files in the directory
 images = [file for file in os.listdir(image_directory) if file.lower().endswith(image_extensions)]
+random.shuffle(images)
 
 # Write the image list to a JSON file
 with open(output_file, "w") as f:
